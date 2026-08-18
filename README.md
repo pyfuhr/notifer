@@ -8,6 +8,14 @@ The core logic operates as a single-read queue. When a company posts an update, 
 git clone https://github.com/pyfuhr/notifer
 cd notifer
 uv sync
+cat << EOF > .env
+REDIS_PASSWORD=qwerty
+REDIS_URL="127.0.0.1"
+REDIS_PORT=6379
+
+SQLITE_DB_PATH="notify.db"
+EOF
+
 uv run uvicorn main:app --host 0.0.0.0 --port 39080
 ```
 ## Endpoint
