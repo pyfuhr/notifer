@@ -48,3 +48,5 @@ uv run uvicorn main:app --host 0.0.0.0 --port 39080
 * GET /notifies — Read and clear notifications from Redis
 * Request: {"token": "str"} (user token)
    * Response (200): [{"company": "str", "data": "str", "dt": float}, ...] | 401 (invalid token)
+ 
+ctoken - company token, stoken - subscribe token (of pair pub-sub), utoken - user token
