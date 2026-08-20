@@ -134,7 +134,7 @@ def subscribe(cname: str, utoken: Token, sqldb: sqlite3.Connection = Depends(get
         subscribe = base64.b64encode(random.randbytes(32)).decode()
 
     if (subscribe_id:=sqldb.execute("SELECT id FROM pairs WHERE user_id=? AND company_id=?", (user_id[0], company_id[0])).fetchone()) is None:
-        sqldb.execute("INSERT INTO pairs (subscribe, user_id, company_id) values (?, ?, ?)", (subscribe, company_id[0], user_id[0]))
+        sqldb.execute("INSERT INTO pairs (subscribe, user_id, company_id) values (?, ?, ?)", (subscribe, user_id[0], company_id[0]))
     else:
         sqldb.execute("UPDATE pairs SET subscribe=? WHERE id=?", (subscribe, subscribe_id[0]))
     sqldb.commit()
@@ -173,13 +173,12 @@ def notifies(token: Token, redisdb: redis.Redis = Depends(get_redisdb), sqldb: s
     pipe.delete(user_id[0])
 
     results = pipe.execute()
-    print(results[0])
     if results[0]:
-        data = results[0][0].decode()
+        data = [i.decode() for i in results[0]]
     else:
-        data = "{}"
+        data = {}
 
-    return Response(data)
+    return responses.JSONResponse(data)
 
 with get_sqldb_connection() as con:
     con.execute('''
